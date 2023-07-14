@@ -5,9 +5,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * 单线程的服务端
+ * 多线程的服务端
  */
-public class SingleThreadServer {
+public class MultiThreadServer {
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(9000);//服务套接字,9000端口
         while (true) {
@@ -15,7 +15,13 @@ public class SingleThreadServer {
             //阻塞等待客户端的连接
             Socket socket = serverSocket.accept();
             System.out.println("已有客户端连接");
-            Util.handle(socket);
+            new Thread(() -> {
+                try {
+                    Util.handle(socket);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
     }
 }
