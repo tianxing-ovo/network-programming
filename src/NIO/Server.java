@@ -14,7 +14,8 @@ import java.util.Set;
  * 服务端
  */
 public class Server {
-    @SuppressWarnings("InfiniteLoopStatement") public static void main(String[] args) throws IOException {
+    @SuppressWarnings("InfiniteLoopStatement")
+    public static void main(String[] args) throws IOException {
         //创建serverSocketChannel对象
         ServerSocketChannel ssc = ServerSocketChannel.open();
         //设置为非阻塞的方式
@@ -40,7 +41,6 @@ public class Server {
                 handle(selectionKey); //处理SelectionKey
                 iterator.remove(); //删除SelectionKey,防止重复处理
             }
-
         }
     }
 
