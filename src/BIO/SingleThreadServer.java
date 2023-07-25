@@ -7,9 +7,10 @@ import java.net.Socket;
 /**
  * 单线程的服务端
  */
+@SuppressWarnings("InfiniteLoopStatement")
 public class SingleThreadServer {
     public static void main(String[] args) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(9000);//服务套接字,9000端口
+        ServerSocket serverSocket = new ServerSocket(9000); //服务套接字,9000端口
         while (true) {
             System.out.println("等待客户端的连接...");
             //阻塞等待客户端的连接
