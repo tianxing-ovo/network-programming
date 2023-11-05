@@ -1,4 +1,4 @@
-package BIO;
+package bio;
 
 import io.github.tianxingovo.common.SocketUtil;
 import lombok.extern.slf4j.Slf4j;

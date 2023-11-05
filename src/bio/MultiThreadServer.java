@@ -1,4 +1,4 @@
-package BIO;
+package bio;
 
 
 import io.github.tianxingovo.common.SocketUtil;
