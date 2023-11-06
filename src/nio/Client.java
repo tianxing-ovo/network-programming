@@ -1,8 +1,17 @@
 package nio;
 
-import java.io.IOException;
-import java.nio.channels.SocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.SocketChannel;
+import java.util.Iterator;
+
+@SuppressWarnings("InfiniteLoopStatement")
+@Slf4j
 public class Client {
     public static void main(String[] args) throws IOException {
         SocketChannel channel = SocketChannel.open();
@@ -11,6 +20,7 @@ public class Client {
         Selector selector = Selector.open();
         channel.register(selector, SelectionKey.OP_CONNECT);
         while (true) {
+            // 阻塞直到至少一个注册的SelectionKey变为就绪状态,返回就绪的SelectionKey的数量
             selector.select();
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
             while (iterator.hasNext()) {
@@ -21,7 +31,7 @@ public class Client {
                         socketChannel.finishConnect();
                         socketChannel.configureBlocking(false);
                         socketChannel.write(ByteBuffer.wrap("hello nio server".getBytes()));
-                        socketChannel.register(selector, SelectionKey.OP_READ);
+                        socketChannel.register(selectionKey.selector(), SelectionKey.OP_READ);
                     }
                 } else if (selectionKey.isReadable()) {
                     ByteBuffer buffer = ByteBuffer.allocate(1024);
