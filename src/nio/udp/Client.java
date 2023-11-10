@@ -1,4 +1,4 @@
-package io.github.tianxingovo.nio.udp;
+package nio.udp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
