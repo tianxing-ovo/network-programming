@@ -1,6 +1,6 @@
-package bio;
+package bio.tcp;
 
-import io.github.tianxingovo.common.SocketUtil;
+import io.github.tianxingovo.bio.TCPUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -21,7 +21,10 @@ public class SingleThreadServer {
             // 阻塞等待客户端的连接
             Socket socket = serverSocket.accept();
             log.info("已有客户端连接");
-            SocketUtil.process(socket);
+            // 读取客户端发送的数据
+            TCPUtil.read(socket, "接收到客户端发送的数据");
+            // 向客户端返回数据
+            TCPUtil.write(socket, "hello tcp client");
         }
     }
 }

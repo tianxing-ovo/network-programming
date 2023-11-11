@@ -1,7 +1,7 @@
-package bio;
+package bio.tcp;
 
 
-import io.github.tianxingovo.common.SocketUtil;
+import io.github.tianxingovo.bio.TCPUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -24,7 +24,8 @@ public class MultiThreadServer {
             log.info("已有客户端连接");
             new Thread(() -> {
                 try {
-                    SocketUtil.process(socket);
+                    TCPUtil.read(socket, "接收到客户端发送的数据");
+                    TCPUtil.write(socket, "hello tcp client");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

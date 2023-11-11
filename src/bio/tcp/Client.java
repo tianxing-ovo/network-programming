@@ -1,10 +1,9 @@
-package bio;
+package bio.tcp;
 
+import io.github.tianxingovo.bio.TCPUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
 /**
@@ -17,14 +16,9 @@ public class Client {
         // 连接服务端
         Socket socket = new Socket("localhost", 9000);
         // 发送数据
-        OutputStream os = socket.getOutputStream();
-        os.write("bio data from client".getBytes());
-        os.flush();
+        TCPUtil.write(socket, "hello tcp server");
         // 接收服务端返回的信息
-        InputStream is = socket.getInputStream();
-        byte[] bytes = new byte[1024];
-        int len = is.read(bytes);
-        log.info("接收到服务端返回的数据:{}", new String(bytes, 0, len));
+        TCPUtil.read(socket, "接收到服务端返回的数据");
         // 关闭连接
         socket.close();
     }
