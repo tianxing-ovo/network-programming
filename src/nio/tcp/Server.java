@@ -1,7 +1,5 @@
 package nio.tcp;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -9,49 +7,64 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
+import java.util.Set;
 
 /**
- * 服务端
+ * 聊天室服务端
  */
 @SuppressWarnings("InfiniteLoopStatement")
-@Slf4j
 public class Server {
 
     public static void main(String[] args) throws IOException {
         ServerSocketChannel ssc = ServerSocketChannel.open();
-        ssc.configureBlocking(false); // 非阻塞模式
-        ssc.socket().bind(new InetSocketAddress(9000)); // 设置服务器端口
+        ssc.configureBlocking(false);
+        ssc.bind(new InetSocketAddress(9000));
         Selector selector = Selector.open();
-        // ServerSocketChannel注册到selector上,监听服务端接收客户端连接事件
+        // 监听服务端接收客户端连接事件
         ssc.register(selector, SelectionKey.OP_ACCEPT);
         while (true) {
-            log.info("等待事件发生");
             // 阻塞,轮询监听所有注册到selector上的channel
-            selector.select();
-            log.info("某个事件发生了");
-            // 获取所有发生事件的channel,1个SelectionKey对应1个channel
+            int i = selector.select();
+            if (i == 0) {
+                continue;
+            }
+            // 获取所有发生事件的SelectionKey,1个SelectionKey对应1个channel
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
             while (iterator.hasNext()) {
                 SelectionKey selectionKey = iterator.next();
                 if (selectionKey.isAcceptable()) {
-                    log.info("有客户端连接了");
-                    // 得到ServerSocketChannel,代表服务端
                     ServerSocketChannel channel = (ServerSocketChannel) selectionKey.channel();
                     // 服务端接收客户端的连接,建立服务端和客户端连接的通道(阻塞)
                     SocketChannel socketChannel = channel.accept();
                     socketChannel.configureBlocking(false);
-                    // 把socketChannel注册到selector上,服务端监听读事件
-                    socketChannel.register(selector, SelectionKey.OP_READ);
+                    socketChannel.register(selectionKey.selector(), SelectionKey.OP_READ);
+                    socketChannel.write(ByteBuffer.wrap("欢迎进入聊天室".getBytes(StandardCharsets.UTF_8)));
                 } else if (selectionKey.isReadable()) {
-                    log.info("有客户端向服务端写数据");
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
                     ByteBuffer buffer = ByteBuffer.allocate(1024);
-                    int len = socketChannel.read(buffer);
-                    if (len != -1) {
-                        log.info("读取到客户端的数据:{}", new String(buffer.array(), 0, len));
+                    int len;
+                    StringBuilder sb = new StringBuilder();
+                    while ((len = socketChannel.read(buffer)) > 0) {
+                        sb.append(new String(buffer.array(), 0, len, StandardCharsets.UTF_8));
                     }
-                    socketChannel.write(ByteBuffer.wrap("hello nio client".getBytes()));
+                    if (sb.length() > 0) {
+                        System.out.println(socketChannel.getRemoteAddress() + ":" + sb);
+                        // 获取所有注册的SelectionKey
+                        Set<SelectionKey> set = selectionKey.selector().keys();
+                        // 广播消息给其它客户端
+                        set.forEach(key -> {
+                            if (key.channel() instanceof SocketChannel && key != selectionKey) {
+                                SocketChannel channel = (SocketChannel) key.channel();
+                                try {
+                                    channel.write(ByteBuffer.wrap(sb.toString().getBytes(StandardCharsets.UTF_8)));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
                     selectionKey.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
                 }
                 iterator.remove();
