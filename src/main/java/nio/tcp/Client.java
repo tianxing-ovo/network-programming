@@ -12,6 +12,8 @@ import java.util.Scanner;
 
 /**
  * 聊天室客户端
+ *
+ * @author tianxing
  */
 @SuppressWarnings("InfiniteLoopStatement")
 public class Client {
@@ -28,7 +30,7 @@ public class Client {
                 try {
                     channel.write(ByteBuffer.wrap(s.getBytes(StandardCharsets.UTF_8)));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         }).start();

@@ -1,14 +1,15 @@
 package callback;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author tianxing
+ */
+@Getter
 @Slf4j
 public class A {
-    int res = -1;
-
-    public int getRes() {
-        return res;
-    }
+    private int res = -1;
 
     public void run(Callback callback, int a, int b) {
         log.info("开始");

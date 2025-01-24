@@ -13,6 +13,8 @@ import java.util.Set;
 
 /**
  * 聊天室服务端
+ *
+ * @author tianxing
  */
 @SuppressWarnings("InfiniteLoopStatement")
 public class Server {
@@ -60,7 +62,7 @@ public class Server {
                                 try {
                                     channel.write(ByteBuffer.wrap(sb.toString().getBytes(StandardCharsets.UTF_8)));
                                 } catch (IOException e) {
-                                    e.printStackTrace();
+                                    throw new RuntimeException(e);
                                 }
                             }
                         });

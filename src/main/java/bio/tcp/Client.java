@@ -1,13 +1,16 @@
 package bio.tcp;
 
-import io.github.tianxingovo.bio.TCPUtil;
+
 import lombok.extern.slf4j.Slf4j;
+import util.TCPUtil;
 
 import java.io.IOException;
 import java.net.Socket;
 
 /**
  * 客户端
+ *
+ * @author tianxing
  */
 @Slf4j
 public class Client {

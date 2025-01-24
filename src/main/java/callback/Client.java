@@ -2,8 +2,11 @@ package callback;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author tianxing
+ */
 @Slf4j
-public class Main {
+public class Client {
     public static void main(String[] args) {
         A a = new A();
         Thread thread = new Thread(() -> a.run(i -> {

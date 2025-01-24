@@ -6,10 +6,10 @@
 
 ## 图示
 
-**堆内缓冲区**
+### 堆内缓冲区
 
-![](src/png/堆内缓冲区.png)
+![](src/main/resources/png/堆内缓冲区.png)
 
-**直接缓冲区**
+### 直接缓冲区
 
-![](src/png/直接缓冲区.png)
+![](src/main/resources/png/直接缓冲区.png)

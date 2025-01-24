@@ -8,6 +8,9 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
+/**
+ * @author tianxing
+ */
 public class Server {
     public static void main(String[] args) throws Exception {
         AsynchronousServerSocketChannel serverSocketChannel = AsynchronousServerSocketChannel.open();

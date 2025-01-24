@@ -1,10 +1,14 @@
 package bio.udp;
 
-import io.github.tianxingovo.bio.UDPUtil;
+
+import util.UDPUtil;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+/**
+ * @author tianxing
+ */
 public class Client {
     public static void main(String[] args) throws Exception {
         InetAddress address = InetAddress.getByName("127.0.0.1");

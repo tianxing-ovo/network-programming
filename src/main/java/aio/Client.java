@@ -4,6 +4,9 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 
+/**
+ * @author tianxing
+ */
 public class Client {
     public static void main(String[] args) throws Exception {
         AsynchronousSocketChannel socketChannel = AsynchronousSocketChannel.open();
