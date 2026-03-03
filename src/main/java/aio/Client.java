@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 
 /**
+ * 客户端
+ *
  * @author tianxing
  */
 public class Client {

@@ -15,7 +15,7 @@ import java.util.Scanner;
  *
  * @author tianxing
  */
-@SuppressWarnings("InfiniteLoopStatement")
+@SuppressWarnings({"InfiniteLoopStatement", "resource"})
 public class Client {
 
     public static void start(String name) throws IOException {
@@ -35,7 +35,7 @@ public class Client {
             }
         }).start();
         while (true) {
-            // 阻塞直到至少一个注册的SelectionKey变为就绪状态,返回就绪的SelectionKey的数量
+            // 阻塞直到至少一个注册的SelectionKey变为就绪状态(返回就绪的SelectionKey的数量)
             int i = selector.select();
             if (i == 0) {
                 continue;

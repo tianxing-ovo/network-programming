@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @author tianxing
  */
-@SuppressWarnings("InfiniteLoopStatement")
+@SuppressWarnings({"InfiniteLoopStatement", "resource"})
 public class Server {
 
     public static void main(String[] args) throws IOException {
@@ -67,7 +67,8 @@ public class Server {
                             }
                         });
                     }
-                    selectionKey.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                    // 注册SelectionKey为可读事件(继续监听下一个事件)
+                    selectionKey.interestOps(SelectionKey.OP_READ);
                 }
                 iterator.remove();
             }

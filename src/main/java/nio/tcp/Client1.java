@@ -3,6 +3,8 @@ package nio.tcp;
 import java.io.IOException;
 
 /**
+ * 聊天室客户端1
+ *
  * @author tianxing
  */
 public class Client1 {

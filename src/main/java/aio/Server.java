@@ -9,6 +9,8 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
 /**
+ * 服务端
+ *
  * @author tianxing
  */
 public class Server {
