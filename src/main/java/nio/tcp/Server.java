@@ -1,5 +1,7 @@
 package nio.tcp;
 
+import util.NetworkConfig;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -16,36 +18,36 @@ import java.util.Set;
  *
  * @author tianxing
  */
-@SuppressWarnings({"InfiniteLoopStatement", "resource"})
+@SuppressWarnings({ "InfiniteLoopStatement", "resource" })
 public class Server {
 
     public static void main(String[] args) throws IOException {
         ServerSocketChannel ssc = ServerSocketChannel.open();
         ssc.configureBlocking(false);
-        ssc.bind(new InetSocketAddress(9000));
+        ssc.bind(new InetSocketAddress(NetworkConfig.PORT));
         Selector selector = Selector.open();
         // 监听服务端接收客户端连接事件
         ssc.register(selector, SelectionKey.OP_ACCEPT);
         while (true) {
-            // 阻塞,轮询监听所有注册到selector上的channel
+            // 阻塞(轮询监听所有注册到selector上的channel)
             int i = selector.select();
             if (i == 0) {
                 continue;
             }
-            // 获取所有发生事件的SelectionKey,1个SelectionKey对应1个channel
+            // 获取所有发生事件的SelectionKey(1个SelectionKey对应1个channel)
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
             while (iterator.hasNext()) {
                 SelectionKey selectionKey = iterator.next();
                 if (selectionKey.isAcceptable()) {
                     ServerSocketChannel channel = (ServerSocketChannel) selectionKey.channel();
-                    // 服务端接收客户端的连接,建立服务端和客户端连接的通道(阻塞)
+                    // 服务端接收客户端的连接[建立服务端和客户端连接的通道(阻塞)]
                     SocketChannel socketChannel = channel.accept();
                     socketChannel.configureBlocking(false);
                     socketChannel.register(selectionKey.selector(), SelectionKey.OP_READ);
                     socketChannel.write(ByteBuffer.wrap("欢迎进入聊天室".getBytes(StandardCharsets.UTF_8)));
                 } else if (selectionKey.isReadable()) {
                     SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
-                    ByteBuffer buffer = ByteBuffer.allocate(1024);
+                    ByteBuffer buffer = ByteBuffer.allocate(NetworkConfig.BUFFER_SIZE);
                     int len;
                     StringBuilder sb = new StringBuilder();
                     while ((len = socketChannel.read(buffer)) > 0) {

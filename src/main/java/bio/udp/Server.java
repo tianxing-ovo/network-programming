@@ -1,7 +1,7 @@
 package bio.udp;
 
-
 import lombok.extern.slf4j.Slf4j;
+import util.NetworkConfig;
 import util.UDPUtil;
 
 import java.net.DatagramPacket;
@@ -16,7 +16,7 @@ import java.net.DatagramSocket;
 @Slf4j
 public class Server {
     public static void main(String[] args) throws Exception {
-        DatagramSocket socket = new DatagramSocket(9000);
+        DatagramSocket socket = new DatagramSocket(NetworkConfig.PORT);
         while (true) {
             // 读取客户端发送的数据
             DatagramPacket packet = UDPUtil.read(socket, "接收到客户端发送的数据");

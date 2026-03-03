@@ -1,5 +1,7 @@
 package nio.tcp;
 
+import util.NetworkConfig;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -15,11 +17,11 @@ import java.util.Scanner;
  *
  * @author tianxing
  */
-@SuppressWarnings({"InfiniteLoopStatement", "resource"})
+@SuppressWarnings({ "InfiniteLoopStatement", "resource" })
 public class Client {
 
     public static void start(String name) throws IOException {
-        SocketChannel channel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 9000));
+        SocketChannel channel = SocketChannel.open(new InetSocketAddress(NetworkConfig.HOST, NetworkConfig.PORT));
         channel.configureBlocking(false);
         Selector selector = Selector.open();
         channel.register(selector, SelectionKey.OP_READ);
@@ -45,7 +47,7 @@ public class Client {
                 SelectionKey selectionKey = iterator.next();
                 SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
                 if (selectionKey.isReadable()) {
-                    ByteBuffer buffer = ByteBuffer.allocate(1024);
+                    ByteBuffer buffer = ByteBuffer.allocate(NetworkConfig.BUFFER_SIZE);
                     int len;
                     StringBuilder sb = new StringBuilder();
                     while ((len = socketChannel.read(buffer)) > 0) {

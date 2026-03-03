@@ -1,7 +1,7 @@
 package bio.tcp;
 
-
 import lombok.extern.slf4j.Slf4j;
+import util.NetworkConfig;
 import util.TCPUtil;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class Client {
 
     public static void main(String[] args) throws IOException {
         // 连接服务端
-        Socket socket = new Socket("localhost", 9000);
+        Socket socket = new Socket(NetworkConfig.HOST, NetworkConfig.PORT);
         // 发送数据
         TCPUtil.write(socket, "hello tcp server");
         // 接收服务端返回的信息

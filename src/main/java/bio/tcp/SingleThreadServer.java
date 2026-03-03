@@ -1,6 +1,7 @@
 package bio.tcp;
 
 import lombok.extern.slf4j.Slf4j;
+import util.NetworkConfig;
 import util.TCPUtil;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ import java.net.Socket;
 public class SingleThreadServer {
 
     public static void main(String[] args) throws IOException {
-        try (ServerSocket serverSocket = new ServerSocket(9000)) {
+        try (ServerSocket serverSocket = new ServerSocket(NetworkConfig.PORT)) {
             while (true) {
                 log.info("等待客户端的连接...");
                 // 阻塞等待客户端的连接
