@@ -15,7 +15,9 @@ public class ReadOnlyBuffer {
         ByteBuffer readOnlyBuffer = buffer.asReadOnlyBuffer();
         // 修改原始缓冲区的数据
         buffer.put(0, (byte) 40);
-        // 40
-        System.out.println(readOnlyBuffer.get(0));
+        // 40 2 3 4 5 6 7 8 9
+        while (readOnlyBuffer.hasRemaining()) {
+            System.out.print(readOnlyBuffer.get() + (readOnlyBuffer.hasRemaining() ? " " : ""));
+        }
     }
 }

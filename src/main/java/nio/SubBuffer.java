@@ -17,10 +17,8 @@ public class SubBuffer {
         buffer.limit(7);
         // 创建子缓冲区(共享相同的底层数据数组)
         ByteBuffer subBuffer = buffer.slice();
-        // 子缓冲区的position: 0
-        System.out.println("子缓冲区的position: " + subBuffer.position());
-        // 子缓冲区的limit: 4
-        System.out.println("子缓冲区的limit: " + subBuffer.limit());
+        // 子缓冲区: [pos=0 lim=4 cap=4]
+        System.out.println("子缓冲区: " + subBuffer);
         // 更改子缓冲区的内容(原始缓冲区的内容也会改变)
         subBuffer.put(0, (byte) 40);
         // 原始缓冲区的内容: [1, 2, 3, 40, 5, 6, 7, 8, 9]
