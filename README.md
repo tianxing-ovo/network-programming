@@ -4,37 +4,48 @@
 [![Maven](https://img.shields.io/badge/Maven-3.6%2B-orange)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-一个完整的 Java 网络编程学习项目，涵盖 BIO、NIO、AIO 三种 I/O 模型，以及回调模式示例
+一个完整的 Java 网络编程学习项目，涵盖 BIO、NIO、AIO 三种 I/O 模型，以及 NIO Buffer 和回调模式示例
 
 ## 📋 目录
 
 - [Java 网络编程](#java-网络编程)
-  - [📋 目录](#-目录)
-  - [项目简介](#项目简介)
-  - [技术栈](#技术栈)
-  - [项目结构](#项目结构)
-  - [模块说明](#模块说明)
-    - [BIO (Blocking I/O)](#bio-blocking-io)
-    - [NIO (Non-blocking I/O)](#nio-non-blocking-io)
-    - [AIO (Asynchronous I/O)](#aio-asynchronous-io)
-    - [回调模式示例](#回调模式示例)
-  - [快速开始](#快速开始)
-    - [环境要求](#环境要求)
-    - [编译项目](#编译项目)
-    - [运行测试](#运行测试)
-  - [运行示例](#运行示例)
-    - [TCP 通信示例](#tcp-通信示例)
-    - [UDP 通信示例](#udp-通信示例)
-    - [NIO 聊天室示例](#nio-聊天室示例)
-  - [图示说明](#图示说明)
-    - [堆内缓冲区 (Heap Buffer)](#堆内缓冲区-heap-buffer)
-    - [直接缓冲区 (Direct Buffer)](#直接缓冲区-direct-buffer)
-  - [核心概念对比](#核心概念对比)
-  - [配置说明](#配置说明)
-  - [常见问题 (FAQ)](#-常见问题-faq)
-  - [学习资源推荐](#-学习资源推荐)
-  - [贡献](#贡献)
-  - [许可证](#许可证)
+    - [📋 目录](#-目录)
+    - [项目简介](#项目简介)
+    - [技术栈](#技术栈)
+    - [项目结构](#项目结构)
+    - [模块说明](#模块说明)
+        - [BIO (Blocking I/O)](#bio-blocking-io)
+        - [NIO (Non-blocking I/O)](#nio-non-blocking-io)
+        - [NIO Buffer 示例](#nio-buffer-示例)
+        - [AIO (Asynchronous I/O)](#aio-asynchronous-io)
+        - [回调模式示例](#回调模式示例)
+    - [快速开始](#快速开始)
+        - [环境要求](#环境要求)
+        - [编译项目](#编译项目)
+        - [运行测试](#运行测试)
+    - [运行示例](#运行示例)
+        - [TCP 通信示例](#tcp-通信示例)
+        - [UDP 通信示例](#udp-通信示例)
+        - [NIO 聊天室示例](#nio-聊天室示例)
+        - [NIO Buffer 示例](#nio-buffer-示例-1)
+    - [图示说明](#图示说明)
+        - [堆内缓冲区 (Heap Buffer)](#堆内缓冲区-heap-buffer)
+        - [直接缓冲区 (Direct Buffer)](#直接缓冲区-direct-buffer)
+    - [核心概念对比](#核心概念对比)
+    - [配置说明](#配置说明)
+    - [❓ 常见问题 (FAQ)](#-常见问题-faq)
+        - [1. BIO、NIO、AIO 有什么区别？](#1-bionioaio-有什么区别)
+        - [2. TCP 和 UDP 如何选择？](#2-tcp-和-udp-如何选择)
+        - [3. 运行时提示端口被占用怎么办？](#3-运行时提示端口被占用怎么办)
+        - [4. 为什么 NIO 示例中客户端连接后没有反应？](#4-为什么-nio-示例中客户端连接后没有反应)
+        - [5. 堆内缓冲区和直接缓冲区如何选择？](#5-堆内缓冲区和直接缓冲区如何选择)
+        - [6. 为什么 Buffer 示例里反复强调 `flip()`？](#6-为什么-buffer-示例里反复强调-flip)
+    - [📚 学习资源推荐](#-学习资源推荐)
+        - [官方文档](#官方文档)
+        - [推荐书籍](#推荐书籍)
+        - [相关项目](#相关项目)
+    - [贡献](#贡献)
+    - [许可证](#许可证)
 
 ## 项目简介
 
@@ -79,6 +90,12 @@ network-programming/
         │   │   ├── Client.java
         │   │   └── ResultCallback.java
         │   ├── nio/                  # 非阻塞 I/O (NIO)
+        │   │   ├── buffer/           # Buffer 示例
+        │   │   │   ├── DirectBuffer.java
+        │   │   │   ├── HeapBuffer.java
+        │   │   │   ├── MappedBuffer.java
+        │   │   │   ├── ReadOnlyBuffer.java
+        │   │   │   └── SubBuffer.java
         │   │   ├── tcp/              # TCP 聊天室
         │   │   │   ├── Client.java
         │   │   │   ├── Client1.java
@@ -95,6 +112,8 @@ network-programming/
             ├── image/                # 图片资源
             │   ├── 堆内缓冲区.jpeg
             │   └── 直接缓冲区.jpeg
+            ├── txt/
+            │   └── 1.txt             # MappedBuffer 示例文件
             └── logback.xml           # 日志配置文件
 ```
 
@@ -105,11 +124,13 @@ network-programming/
 传统的阻塞式 I/O 模型，每个连接都需要一个独立的线程处理
 
 **特点**：
+
 - 代码简单直观
 - 线程开销大
 - 适合连接数少的场景
 
 **运行方式**：
+
 ```bash
 # 1. 启动服务端（选择一个）
 mvn exec:java -Dexec.mainClass="bio.tcp.SingleThreadServer"
@@ -124,11 +145,13 @@ mvn exec:java -Dexec.mainClass="bio.tcp.Client"
 基于 Channel、Buffer、Selector 的非阻塞 I/O 模型
 
 **特点**：
+
 - 单线程处理多连接
 - 使用缓冲区提高性能
 - 适合高并发场景
 
 **聊天室示例**：
+
 ```bash
 # 1. 启动服务端
 mvn exec:java -Dexec.mainClass="nio.tcp.Server"
@@ -139,6 +162,7 @@ mvn exec:java -Dexec.mainClass="nio.tcp.Client2"
 ```
 
 **UDP 通信示例**：
+
 ```bash
 # 1. 启动服务端
 mvn exec:java -Dexec.mainClass="nio.udp.Server"
@@ -155,16 +179,36 @@ mvn exec:java -Dexec.mainClass="nio.udp.Client"
 | `Buffer` | 数据容器，读写数据的中转站 |
 | `DatagramChannel` | UDP 数据报通道 |
 
+### NIO Buffer 示例
+
+这一组示例聚焦 `ByteBuffer` 的典型用法和常见陷阱，适合和网络 I/O 一起学习。
+
+|             类名              |                 演示重点                  |
+|:---------------------------:|:-------------------------------------:|
+|   `nio.buffer.HeapBuffer`   |   展示堆内缓冲区的写入、`flip()` 切换到读模式后的状态变化    |
+|  `nio.buffer.DirectBuffer`  |            展示直接缓冲区的创建和顺序读取            |
+| `nio.buffer.ReadOnlyBuffer` |       展示只读缓冲区与原始缓冲区共享数据，但自身不可写        |
+|   `nio.buffer.SubBuffer`    |  展示 `slice()` 创建子缓冲区后，底层数据共享带来的联动效果   |
+|  `nio.buffer.MappedBuffer`  | 展示 `MappedByteBuffer` 将文件映射到内存后直接读取内容 |
+
+**适合关注的点**：
+
+- `flip()` 负责把缓冲区从写模式切换到读模式
+- `slice()` 和 `asReadOnlyBuffer()` 会共享底层数据
+- `MappedByteBuffer` 更贴近文件 I/O，适合理解零拷贝相关概念
+
 ### AIO (Asynchronous I/O)
 
 JDK 7 引入的异步 I/O，基于回调机制
 
 **特点**：
+
 - 真正的异步非阻塞
 - 通过 CompletionHandler 处理结果
 - 适合高并发、长连接场景
 
 **运行方式**：
+
 ```bash
 # 1. 启动服务端
 mvn exec:java -Dexec.mainClass="aio.Server"
@@ -255,6 +299,25 @@ mvn exec:java -Dexec.mainClass="nio.tcp.Client1"
 mvn exec:java -Dexec.mainClass="nio.tcp.Client2"
 ```
 
+### NIO Buffer 示例
+
+```bash
+# 堆内缓冲区：观察 position / limit / capacity 的变化
+mvn exec:java -Dexec.mainClass="nio.buffer.HeapBuffer"
+
+# 直接缓冲区：演示 allocateDirect 创建的缓冲区读取流程
+mvn exec:java -Dexec.mainClass="nio.buffer.DirectBuffer"
+
+# 只读缓冲区：演示共享数据与只读限制
+mvn exec:java -Dexec.mainClass="nio.buffer.ReadOnlyBuffer"
+
+# 子缓冲区：演示 slice() 后的共享底层数组
+mvn exec:java -Dexec.mainClass="nio.buffer.SubBuffer"
+
+# 内存映射缓冲区：读取 src/main/resources/txt/1.txt
+mvn exec:java -Dexec.mainClass="nio.buffer.MappedBuffer"
+```
+
 ## 图示说明
 
 ### 堆内缓冲区 (Heap Buffer)
@@ -291,6 +354,8 @@ public class NetworkConfig {
     public static final int BUFFER_SIZE = 1024;        // 缓冲区大小
 }
 ```
+
+`nio.buffer.MappedBuffer` 依赖示例文件 `src/main/resources/txt/1.txt`，运行时请从项目根目录启动命令。
 
 ## ❓ 常见问题 (FAQ)
 
@@ -332,18 +397,26 @@ taskkill /PID <进程ID> /F
 |  **Heap Buffer**  | 创建快、GC 管理  | I/O 需要复制  |  短生命周期、数据量小  |
 | **Direct Buffer** | 零拷贝、I/O 高效 | 创建慢、需手动释放 | 长生命周期、频繁 I/O |
 
+### 6. 为什么 Buffer 示例里反复强调 `flip()`？
+
+因为 `ByteBuffer` 写入数据后，`position` 已经移动到末尾；如果不先 `flip()`，读取时 `limit` 仍然是容量上限，容易读不到预期内容。
+`nio.buffer.HeapBuffer` 就是专门用来观察这个状态切换的。
+
 ## 📚 学习资源推荐
 
 ### 官方文档
+
 - [Java Networking](https://docs.oracle.com/javase/tutorial/networking/)
 - [Java NIO](https://docs.oracle.com/javase/8/docs/api/java/nio/package-summary.html)
 
 ### 推荐书籍
+
 - 《Java 网络编程》- Elliotte Rusty Harold
 - 《Java NIO》- Ron Hitchens
 - 《Netty 权威指南》- 李林锋
 
 ### 相关项目
+
 - [Netty](https://github.com/netty/netty) - 异步事件驱动网络框架
 - [Mina](https://github.com/apache/mina) - Apache 网络应用框架
 
