@@ -314,7 +314,7 @@ mvn exec:java -Dexec.mainClass="nio.buffer.ReadOnlyBuffer"
 # 子缓冲区：演示 slice() 后的共享底层数组
 mvn exec:java -Dexec.mainClass="nio.buffer.SubBuffer"
 
-# 内存映射缓冲区：读取 src/main/resources/txt/1.txt
+# 内存映射缓冲区：读取 src/main/resources/txt/mapped-buffer.txt
 mvn exec:java -Dexec.mainClass="nio.buffer.MappedBuffer"
 ```
 

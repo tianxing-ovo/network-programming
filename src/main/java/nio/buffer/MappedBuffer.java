@@ -15,7 +15,7 @@ public class MappedBuffer {
 
     public static void main(String[] args) throws IOException {
         // 指定要映射的文件路径
-        File file = new File("src/main/resources/txt/1.txt");
+        File file = new File("src/main/resources/txt/mapped-buffer.txt");
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
              FileChannel channel = randomAccessFile.getChannel()) {
             // 创建内存映射缓冲区
