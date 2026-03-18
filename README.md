@@ -17,6 +17,7 @@
         - [BIO (Blocking I/O)](#bio-blocking-io)
         - [NIO (Non-blocking I/O)](#nio-non-blocking-io)
         - [NIO Buffer 示例](#nio-buffer-示例)
+        - [NIO 其他示例](#nio-其他示例)
         - [AIO (Asynchronous I/O)](#aio-asynchronous-io)
         - [回调模式示例](#回调模式示例)
     - [快速开始](#快速开始)
@@ -28,6 +29,7 @@
         - [UDP 通信示例](#udp-通信示例)
         - [NIO 聊天室示例](#nio-聊天室示例)
         - [NIO Buffer 示例](#nio-buffer-示例-1)
+        - [NIO 文件与管道示例](#nio-文件与管道示例)
     - [图示说明](#图示说明)
         - [堆内缓冲区 (Heap Buffer)](#堆内缓冲区-heap-buffer)
         - [直接缓冲区 (Direct Buffer)](#直接缓冲区-direct-buffer)
@@ -96,6 +98,10 @@ network-programming/
         │   │   │   ├── MappedBuffer.java
         │   │   │   ├── ReadOnlyBuffer.java
         │   │   │   └── SubBuffer.java
+        │   │   ├── other/            # 文件、管道等其他 NIO 示例
+        │   │   │   ├── NioAsynchronousFileChannel.java
+        │   │   │   ├── NioFileLock.java
+        │   │   │   └── NioPipe.java
         │   │   ├── tcp/              # TCP 聊天室
         │   │   │   ├── Client.java
         │   │   │   ├── Client1.java
@@ -113,7 +119,9 @@ network-programming/
             │   ├── 堆内缓冲区.jpeg
             │   └── 直接缓冲区.jpeg
             ├── txt/
-            │   └── 1.txt             # MappedBuffer 示例文件
+            │   ├── async-file-channel.txt
+            │   ├── file-lock.txt
+            │   └── mapped-buffer.txt
             └── logback.xml           # 日志配置文件
 ```
 
@@ -196,6 +204,22 @@ mvn exec:java -Dexec.mainClass="nio.udp.Client"
 - `flip()` 负责把缓冲区从写模式切换到读模式
 - `slice()` 和 `asReadOnlyBuffer()` 会共享底层数据
 - `MappedByteBuffer` 更贴近文件 I/O，适合理解零拷贝相关概念
+
+### NIO 其他示例
+
+这一组示例补充了文件通道、文件锁和管道这几个常见主题，适合和 `ByteBuffer`、`Channel` 一起理解。
+
+|                  类名                  |                           演示重点                           |
+|:------------------------------------:|:--------------------------------------------------------:|
+| `nio.other.NioAsynchronousFileChannel` | 展示 `AsynchronousFileChannel` 的异步读取、异步写入和 `CompletionHandler` 回调 |
+|        `nio.other.NioFileLock`        |       展示排它锁和共享锁的基本流程，说明文件锁主要用于进程间协作        |
+|          `nio.other.NioPipe`          |               展示 `Pipe` 在两个线程之间进行单向数据传输               |
+
+**适合关注的点**：
+
+- `AsynchronousFileChannel` 发起操作后不会阻塞当前线程，通常要等待回调执行完成
+- `FileLock` 更适合做进程级别的文件访问控制，不适合替代线程锁
+- `Pipe` 一端负责写入，一端负责读取，适合观察单向数据流转过程
 
 ### AIO (Asynchronous I/O)
 
@@ -318,6 +342,19 @@ mvn exec:java -Dexec.mainClass="nio.buffer.SubBuffer"
 mvn exec:java -Dexec.mainClass="nio.buffer.MappedBuffer"
 ```
 
+### NIO 文件与管道示例
+
+```bash
+# 异步文件通道：读取并写入 src/main/resources/txt/async-file-channel.txt
+mvn exec:java -Dexec.mainClass="nio.other.NioAsynchronousFileChannel"
+
+# 文件锁：演示排它锁和共享锁访问 src/main/resources/txt/file-lock.txt
+mvn exec:java -Dexec.mainClass="nio.other.NioFileLock"
+
+# 管道：演示两个线程之间的单向数据传输
+mvn exec:java -Dexec.mainClass="nio.other.NioPipe"
+```
+
 ## 图示说明
 
 ### 堆内缓冲区 (Heap Buffer)
@@ -355,7 +392,11 @@ public class NetworkConfig {
 }
 ```
 
-`nio.buffer.MappedBuffer` 依赖示例文件 `src/main/resources/txt/1.txt`，运行时请从项目根目录启动命令。
+以下示例依赖 `src/main/resources/txt` 目录下的文本文件，运行时请从项目根目录启动命令：
+
+- `nio.buffer.MappedBuffer` 使用 `mapped-buffer.txt`
+- `nio.other.NioAsynchronousFileChannel` 使用 `async-file-channel.txt`
+- `nio.other.NioFileLock` 使用 `file-lock.txt`
 
 ## ❓ 常见问题 (FAQ)
 
