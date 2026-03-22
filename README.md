@@ -104,8 +104,6 @@ network-programming/
         │   │   │   └── NioPipe.java
         │   │   ├── tcp/              # TCP 聊天室
         │   │   │   ├── Client.java
-        │   │   │   ├── Client1.java
-        │   │   │   ├── Client2.java
         │   │   │   └── Server.java
         │   │   └── udp/              # UDP 通信
         │   │       ├── Client.java
@@ -164,10 +162,15 @@ mvn exec:java -Dexec.mainClass="bio.tcp.Client"
 # 1. 启动服务端
 mvn exec:java -Dexec.mainClass="nio.tcp.Server"
 
-# 2. 启动多个客户端
-mvn exec:java -Dexec.mainClass="nio.tcp.Client1"
-mvn exec:java -Dexec.mainClass="nio.tcp.Client2"
+# 2. 启动多个客户端（分别在不同终端执行同一个客户端类）
+mvn exec:java -Dexec.mainClass="nio.tcp.Client"
+mvn exec:java -Dexec.mainClass="nio.tcp.Client"
 ```
+
+**断连行为**：
+
+- 客户端关闭后，服务端只清理当前连接并继续运行
+- 服务端关闭后，客户端会检测到连接断开并退出
 
 **UDP 通信示例**：
 
@@ -209,11 +212,11 @@ mvn exec:java -Dexec.mainClass="nio.udp.Client"
 
 这一组示例补充了文件通道、文件锁和管道这几个常见主题，适合和 `ByteBuffer`、`Channel` 一起理解。
 
-|                  类名                  |                           演示重点                           |
-|:------------------------------------:|:--------------------------------------------------------:|
+|                   类名                   |                              演示重点                               |
+|:--------------------------------------:|:---------------------------------------------------------------:|
 | `nio.other.NioAsynchronousFileChannel` | 展示 `AsynchronousFileChannel` 的异步读取、异步写入和 `CompletionHandler` 回调 |
-|        `nio.other.NioFileLock`        |       展示排它锁和共享锁的基本流程，说明文件锁主要用于进程间协作        |
-|          `nio.other.NioPipe`          |               展示 `Pipe` 在两个线程之间进行单向数据传输               |
+|        `nio.other.NioFileLock`         |                  展示排它锁和共享锁的基本流程，说明文件锁主要用于进程间协作                  |
+|          `nio.other.NioPipe`           |                    展示 `Pipe` 在两个线程之间进行单向数据传输                    |
 
 **适合关注的点**：
 
@@ -316,12 +319,14 @@ mvn exec:java -Dexec.mainClass="bio.udp.Client"
 # 终端 1 - 启动聊天室服务端
 mvn exec:java -Dexec.mainClass="nio.tcp.Server"
 
-# 终端 2 - 启动客户端 1（小明）
-mvn exec:java -Dexec.mainClass="nio.tcp.Client1"
+# 终端 2 - 启动客户端 1
+mvn exec:java -Dexec.mainClass="nio.tcp.Client"
 
-# 终端 3 - 启动客户端 2（小赵）
-mvn exec:java -Dexec.mainClass="nio.tcp.Client2"
+# 终端 3 - 启动客户端 2
+mvn exec:java -Dexec.mainClass="nio.tcp.Client"
 ```
+
+运行后按提示输入昵称即可；如果你在 IDEA 中运行，记得给 `nio.tcp.Client` 的运行配置开启“允许多个实例”。
 
 ### NIO Buffer 示例
 
