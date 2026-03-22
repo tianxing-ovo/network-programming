@@ -17,8 +17,14 @@ import java.util.Scanner;
  *
  * @author tianxing
  */
-@SuppressWarnings({ "InfiniteLoopStatement", "resource" })
+@SuppressWarnings({"InfiniteLoopStatement", "resource"})
 public class Client {
+
+    public static void main(String[] args) throws IOException {
+        System.out.print("请输入您的姓名: ");
+        String name = new Scanner(System.in).nextLine();
+        start(name);
+    }
 
     public static void start(String name) throws IOException {
         SocketChannel channel = SocketChannel.open(new InetSocketAddress(NetworkConfig.HOST, NetworkConfig.PORT));

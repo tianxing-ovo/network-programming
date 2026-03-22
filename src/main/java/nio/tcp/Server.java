@@ -18,7 +18,7 @@ import java.util.Set;
  *
  * @author tianxing
  */
-@SuppressWarnings({ "InfiniteLoopStatement", "resource" })
+@SuppressWarnings({"InfiniteLoopStatement", "resource"})
 public class Server {
 
     public static void main(String[] args) throws IOException {
