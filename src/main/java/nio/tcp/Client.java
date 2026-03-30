@@ -1,5 +1,6 @@
 package nio.tcp;
 
+import lombok.extern.slf4j.Slf4j;
 import util.NetworkConfig;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.Scanner;
  *
  * @author tianxing
  */
+@Slf4j
 public class Client {
 
     public static void main(String[] args) throws IOException {
@@ -34,8 +36,8 @@ public class Client {
     public static void start(String name) throws IOException {
         // 创建SocketChannel并连接服务器
         SocketChannel channel = SocketChannel.open(new InetSocketAddress(NetworkConfig.HOST, NetworkConfig.PORT));
-        System.out.println("已连接到服务器: " + channel.getRemoteAddress());
-        // 设置为非阻塞模式(配合Selector实现异步I/O)
+        log.info("已连接到服务器: {}", channel.getRemoteAddress());
+        // 设置为非阻塞模式(配合Selector实现事件驱动的多路复用I/O)
         channel.configureBlocking(false);
         // 创建Selector用于监听通道的I/O事件
         Selector selector = Selector.open();
@@ -46,19 +48,20 @@ public class Client {
         sendThread.start();
         // 主线程(处理服务器消息接收)
         while (true) {
-            // 阻塞直到至少一个注册的SelectionKey变为就绪状态(返回就绪的SelectionKey的数量)
+            // 阻塞等待至少一个注册的Channel有I/O事件发生(返回就绪的SelectionKey的数量)
             int i = selector.select();
             if (i == 0) {
                 continue;
             }
-            // 获取所有就绪的SelectionKey并处理
+            log.info("唤醒成功 | 就绪数量: {} | 总连接数: {}", i, selector.keys().size());
+            // 获取所有发生事件的SelectionKey(1个SelectionKey对应1个channel)
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
             while (iterator.hasNext()) {
                 SelectionKey selectionKey = iterator.next();
-                // 获取与SelectionKey关联的SocketChannel
-                SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
-                // 处理可读事件(服务器发来的消息)
+                // 处理读事件(服务端发送消息)
                 if (selectionKey.isReadable()) {
+                    // 获取与服务端通信的SocketChannel
+                    SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
                     ByteBuffer buffer = ByteBuffer.allocate(NetworkConfig.BUFFER_SIZE);
                     StringBuilder sb = new StringBuilder();
                     int len;

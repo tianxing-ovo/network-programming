@@ -1,5 +1,6 @@
 package nio.tcp;
 
+import lombok.extern.slf4j.Slf4j;
 import util.NetworkConfig;
 
 import java.io.IOException;
@@ -18,13 +19,14 @@ import java.util.Set;
  *
  * @author tianxing
  */
+@Slf4j
 @SuppressWarnings({"InfiniteLoopStatement", "resource"})
 public class Server {
 
     public static void main(String[] args) throws IOException {
         // 创建ServerSocketChannel用于监听客户端连接
         ServerSocketChannel ssc = ServerSocketChannel.open();
-        // 设置为非阻塞模式(配合Selector实现异步I/O)
+        // 设置为非阻塞模式(配合Selector实现事件驱动的多路复用I/O)
         ssc.configureBlocking(false);
         // 绑定监听端口(等待客户端连接)
         ssc.bind(new InetSocketAddress(NetworkConfig.PORT));
@@ -39,6 +41,7 @@ public class Server {
             if (i == 0) {
                 continue;
             }
+            log.info("唤醒成功 | 就绪数量: {} | 总连接数: {}", i, selector.keys().size() - 1);
             // 获取所有发生事件的SelectionKey(1个SelectionKey对应1个channel)
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
             while (iterator.hasNext()) {
@@ -47,7 +50,7 @@ public class Server {
                 if (selectionKey.isAcceptable()) {
                     // 获取ServerSocketChannel(监听socket)
                     ServerSocketChannel channel = (ServerSocketChannel) selectionKey.channel();
-                    // 接受客户端连接(返回与客户端通信的SocketChannel)
+                    // 非阻塞接受客户端连接(返回与客户端通信的SocketChannel)
                     SocketChannel socketChannel = channel.accept();
                     if (socketChannel == null) {
                         iterator.remove();
@@ -57,7 +60,7 @@ public class Server {
                     socketChannel.configureBlocking(false);
                     // 注册读事件到Selector(监听客户端发送的消息)
                     socketChannel.register(selectionKey.selector(), SelectionKey.OP_READ);
-                    System.out.println(socketChannel.getRemoteAddress() + ": 连接成功");
+                    log.info("{}: 连接成功", socketChannel.getRemoteAddress());
                     // 向客户端发送欢迎消息
                     socketChannel.write(ByteBuffer.wrap("欢迎进入聊天室".getBytes(StandardCharsets.UTF_8)));
                 }
@@ -136,7 +139,7 @@ public class Server {
             selectionKey.cancel();
             socketChannel.close();
         } catch (IOException e) {
-            System.out.println("关闭客户端连接失败: " + e.getMessage());
+            log.error("关闭客户端连接失败: {}", e.getMessage());
         }
     }
 
